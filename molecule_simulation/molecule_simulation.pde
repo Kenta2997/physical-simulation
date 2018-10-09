@@ -1,6 +1,5 @@
 int totalBalls = 120;
 Ball[] balls = new Ball[totalBalls];
-
 float targetX, targetY;
 
 int width, height;
