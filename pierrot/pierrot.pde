@@ -1,5 +1,5 @@
  
-// morau 'c'
+// pay_off 'c'
 // Throw ' '
  
  
@@ -11,6 +11,7 @@ float x = width/2.0;
 float y = 0;
 float g = width*0.01;
 float coind = width/9*0.8;
+float point_r = 0.1;
 bar bar1;
 
 int have_coin = 30;
@@ -30,7 +31,7 @@ int stocki = 0;
 void setup(){
   size(540, 1000);
   noStroke();
-  frameRate(30);
+  frameRate(50);
   smooth();
   
   for (int i=0;i<8;i++){
@@ -45,7 +46,7 @@ void setup(){
       point ppp = new point();
       ppp.x = width/9*(i+1);
       ppp.y = yyy;
-      ppp.r = 0.5;
+      ppp.r = point_r;
       points[pi] = ppp;
       pi++;
       yyy += coind/2.0;
@@ -55,7 +56,7 @@ void setup(){
     points[pi+i] = new point();
     points[pi+i].x = width*i;
     points[pi+i].y = height-width*0.2;
-    points[pi+i].r = 0.5;
+    points[pi+i].r = point_r;
    }
   pi += 2;
   bar b1=new bar(),b2=new bar();
@@ -79,8 +80,8 @@ void setup(){
         points[pi+1].y = py-pc*0.2*(j+1.0);
         points[pi].x = px-pc*0.2*(j+1.0);
         points[pi+1].x = points[pi].x+(width/2.0-points[pi].x)*2;
-        points[pi].r = 0.5;
-        points[pi+1].r = 0.5;
+        points[pi].r = point_r;
+        points[pi+1].r = point_r;
         pi+=2;
       }
     }
@@ -88,7 +89,7 @@ void setup(){
       point ppp = new point();
       ppp.x = px;
       ppp.y = py;
-      ppp.r = 0.5;
+      ppp.r = point_r;
       points[pi] = ppp;
       pi++;
       px += pc;
@@ -178,9 +179,11 @@ void draw() {
      vx = 0;
      vy = 0;
   }
-
-
-
+  
+  fill(color(0, 0, 255));
+  textSize(32);
+  text("WIN:"+Integer.toString(win()), width/5.0, height/3.0);
+  text("CREDIT:"+Integer.toString(have_coin), width*3.0/5.0, height/3.0);
 }
 
 
@@ -289,7 +292,16 @@ void coll_point(){
      float dx = points[i].x - x;
      float dy = points[i].y - y;
      float d = sqrt(dx * dx + dy * dy);
-     if(d<coind/2+points[i].r){
+     /*if(d<coind/2+points[i].r){
+       dx /= d;
+       dy /= d;
+       float naiseki = vx*dx+vy*dy;
+       vx -= naiseki*dx*(1.0+e);
+       vy -= naiseki*dy*(1.0+e);
+       x = points[i].x - dx*(coind+points[i].r);
+       y = points[i].y - dy*(coind+points[i].r);
+     }*/
+     if(d<coind/2){
        dx /= d;
        dy /= d;
        float naiseki = vx*dx+vy*dy;
@@ -299,4 +311,29 @@ void coll_point(){
        y = points[i].y - dy*(coind+points[i].r);
      }
   }
+}
+int win(){
+    int[] there = new int[9];
+    for(int i=0;i<9;i++){
+      there[i]=0;
+    }
+    for(int i=0;i<stocki;i++){
+      there[stock[i]]=1;
+    }
+    int getc = 0;
+    int ren = 0;
+    for(int i=1;i<9;i++){
+      if(there[i]==1){
+        ren++;
+      }else{
+        if(ren==2)getc+=4;
+        if(ren==3)getc+=6;
+        if(ren==4)getc+=20;
+        if(ren==5)getc+=60;
+        if(ren==6)getc+=120;
+        if(ren==7)getc+=240;
+        ren = 0;
+      }
+    }
+    return getc;
 }
